@@ -1,4 +1,5 @@
-﻿using Qubit;
+﻿
+using QuantumComputer.QubitComputations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,13 @@ using System.Threading.Tasks;
 
 namespace QuantumComputer
 {
-    class QuantumRegister
+    public class QuantumRegister
     {
         public int size { get; set; }
-        public qubit[] Qubits { get; set; }
-        private complex[] stateRegister { get; set; }
+        public Qubit[] Qubits { get; set; }
         private double[] amplitudes { get; set; }
        
-        public QuantumRegister(IEnumerable<qubit> qubits)
+        public QuantumRegister(IEnumerable<Qubit> qubits)
         {
             Qubits = qubits.ToArray();
             amplitudes = new double[(2).Pow(Qubits.Length)];
@@ -38,38 +38,32 @@ namespace QuantumComputer
                 amplitudes[i] = resmatrix[i][i];
             }
         }
-
-        private void RandomAmplitudes()
+        /// <summary>
+        /// Use decoherence on register
+        /// </summary>
+        /// <returns>String decribing final qubits state</returns>
+        internal string Measure()
         {
             var rnd = new Random();
-            amplitudes = amplitudes.Select(o => rnd.NextDouble()).ToArray();
+            var tobeFound = rnd.NextDouble();
+            var index = -1;
+            var sum = 0;
+            var previous = 0D;
+            var next = amplitudes[0];
+            for (int i = 1; i < amplitudes.Length; i++)
+            {
+                if (previous <= tobeFound && tobeFound <= next)
+                {
+                    index = i-1;
+                    break;
+                }
+                previous += amplitudes[i];
+                if (i < amplitudes.Length)
+                    next += amplitudes[i + 1];
+                else
+                    index = i;
+            }
+            return $"|{Convert.ToString(index, 2).PadLeft(Qubits.Length, '0')}>";
         }
-
-        public void Hadamard(int qubitindex)
-        {
-            Action hadamard = () => Qubits[qubitindex] = Qubits[qubitindex].Hadamard();
-            ComputeGate(hadamard);
-        }
-
-        internal void CNot(int v1, int v2)
-        {
-            Action cNot = () => Qubits[v2] = qubit.CNOT(Qubits[v1], Qubits[v2]);
-            ComputeGate(cNot);
-        }
-
-        internal void ComputeGate(Action gate)
-        {
-            gate.Invoke();
-            Evaluate();
-        }
-
-        private double[][] GetHadamardMatrix(int length)
-        {         
-            var res = Matrix.TensorProduct(Matrix.HadamardBasic, Matrix.IdentityTwo);
-            var res1 = Matrix.TensorProduct(Matrix.IdentityTwo, res);
-            return Matrix.MultiplyByScalar(res, 1/Math.Sqrt(2));
-        }
-
-      
     }
 }

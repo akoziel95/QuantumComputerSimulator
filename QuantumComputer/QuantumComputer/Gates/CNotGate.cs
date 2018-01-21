@@ -1,32 +1,31 @@
-﻿using System;
+﻿using QuantumComputer.QubitComputations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace QuantumComputer.Gates
 {
-    class CNotGate : IQGate
+    class CNotGate : IStage
     {
-        public int size => 2;
-        private double[][] _matrix;
-        public CNotGate()
+        public CNotGate(int control, int target)
         {
-            // 1 0 0 0
-            // 0 1 0 0
-            // 0 0 0 1
-            // 0 0 1 0
-            _matrix = new double[4][] {
-                new double[] {1,0,0,0},
-                new double[] {1,1,0,0},
-                new double[] {1,0,0,1 },
-                new double[] {0,0,1,0 }
-            };
+            _control = control;
+            _target = target;
         }
+        public int size => 2;
+        private int _control;
+        private int _target;
 
         public QuantumRegister Compute(QuantumRegister register)
         {
-            throw new NotImplementedException();
+            var control = register.Qubits[_control];
+            var target = register.Qubits[_target];
+
+            register.Qubits[_target]= Qubit.CNOT(control, target);
+            return register;
         }
     }
 }

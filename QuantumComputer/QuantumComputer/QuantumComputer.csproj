@@ -57,9 +57,15 @@
     </ApplicationDefinition>
     <Compile Include="Extensions.cs" />
     <Compile Include="Gates\CNotGate.cs" />
+    <Compile Include="Gates\HadamardGate.cs" />
     <Compile Include="Gates\IQGate.cs" />
+    <Compile Include="Gates\PhaseShiftGate.cs" />
+    <Compile Include="Gates\PauliGates.cs" />
     <Compile Include="Matrix.cs" />
+    <Compile Include="QuantumCircuit.cs" />
     <Compile Include="QuantumRegister.cs" />
+    <Compile Include="QubitComputations\Complex.cs" />
+    <Compile Include="QubitComputations\Qubit.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,12 +106,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Qubit-master\Qubit\Qubit.csproj">
-      <Project>{bd7d899a-66d8-477f-8e0e-4f510cd9060b}</Project>
-      <Name>Qubit</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
